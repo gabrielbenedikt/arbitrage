@@ -287,10 +287,169 @@ class AFGbase():
         """Returns current output voltage units of channel chan"""
         return self.msg('SOURCE'+str(chan)+':VOLT:UNIT?')
     
-    # volt units commands
+    # AM commands
     #####################
+    # AM state commands
+    #####################
+    def set_am_state(self, enable=True, chan=1):
+        """Enables of disables amplitude modulation"""
+        return self.msg('SOURCE'+str(chan)+':AM:STATE '+str("ON" if enable else "OFF"))
+    
+    def get_am_state(self, chan=1):
+        """Returns if amplitude modulation is enabled or not"""
+        return self.msg('SOURCE'+str(chan)+':AM:STATE?')
+    
+    # AM source commands
+    #####################
+    def set_am_source(self, src="INT", chan=1):
+        """Sets AM source to INTernal or EXTernal"""
+        if src.upper() in ['INT','EXT']:
+            return self.msg('SOURCE'+str(chan)+':AM:SOUR '+str(src))
+        else:
+            raise RangeException
+    
+    def get_am_state(self, chan=1):
+        """Returns current AM source"""
+        return self.msg('SOURCE'+str(chan)+':AM:SOUR?')
+    
+    # AM function commands
+    #####################
+    def set_am_function(self, func="SIN", chan=1):
+        """Sets internal AM source function"""
+        if src.upper() in ['SIN','SQUARE','RAMP']:
+            return self.msg('SOURCE'+str(chan)+':AM:INT:FUNC '+str(func))
+        else:
+            raise RangeException
+    
+    def get_am_function(self, chan=1):
+        """Returns current internal AM source function"""
+        return self.msg('SOURCE'+str(chan)+':AM:INT:FUNC?')
+    
+    # AM frequency commands
+    #####################
+    def set_am_frequency(self, freq=100, chan=1):
+        """Sets internal AM function frequenc. Can be number or MIN or MAX"""
+        return self.msg('SOURCE'+str(chan)+':AM:INT:FREQ '+str(freq))
+        
+    def get_am_frequency(self, chan=1):
+        """Returns current internal AM function frequency"""
+        return self.msg('SOURCE'+str(chan)+':AM:INT:FREQ?')
+    
+    # AM depth commands
+    #####################
+    def set_am_depth(self, depth=100, chan=1):
+        """Sets AM depth in percent (0-120). Can be number or MIN or MAX"""
+        return self.msg('SOURCE'+str(chan)+':AM:DEPT '+str(depth))
+        
+    def get_am_depth(self, chan=1):
+        """Returns current AM depth"""
+        return self.msg('SOURCE'+str(chan)+':AM:DEPT?')
     
     
+    # FM commands
+    #####################
+    # FM state commands
+    #####################
+    def set_fm_state(self, enable=True, chan=1):
+        """Enables of disables frequency modulation"""
+        return self.msg('SOURCE'+str(chan)+':FM:STATE '+str("ON" if enable else "OFF"))
+    
+    def get_fm_state(self, chan=1):
+        """Returns if frequency modulation is enabled or not"""
+        return self.msg('SOURCE'+str(chan)+':FM:STATE?')
+    
+    # FM source commands
+    #####################
+    def set_fm_source(self, src="INT", chan=1):
+        """Sets FM source to INTernal or EXTernal"""
+        if src.upper() in ['INT','EXT']:
+            return self.msg('SOURCE'+str(chan)+':FM:SOUR '+str(src))
+        else:
+            raise RangeException
+    
+    def get_fm_state(self, chan=1):
+        """Returns current FM source"""
+        return self.msg('SOURCE'+str(chan)+':FM:SOUR?')
+    
+    # FM function commands
+    #####################
+    def set_fm_function(self, func="SIN", chan=1):
+        """Sets internal FM source function"""
+        if src.upper() in ['SIN','SQUARE','RAMP']:
+            return self.msg('SOURCE'+str(chan)+':FM:INT:FUNC '+str(func))
+        else:
+            raise RangeException
+    
+    def get_fm_function(self, chan=1):
+        """Returns current internal FM source function"""
+        return self.msg('SOURCE'+str(chan)+':FM:INT:FUNC?')
+    
+    # FM frequency commands
+    #####################
+    def set_fm_frequency(self, freq=100, chan=1):
+        """Sets internal FM function frequenc. Can be number or MIN or MAX"""
+        return self.msg('SOURCE'+str(chan)+':FM:INT:FREQ '+str(freq))
+        
+    def get_fm_frequency(self, chan=1):
+        """Returns current internal FM function frequency"""
+        return self.msg('SOURCE'+str(chan)+':FM:INT:FREQ?')
+    
+    # FM deviation commands
+    #####################
+    def set_fm_deviation(self, deviation=100, chan=1):
+        """Sets FM deviation in "peak deviation in Hz". Can be number or MIN or MAX"""
+        return self.msg('SOURCE'+str(chan)+':FM:DEV '+str(deviation))
+        
+    def get_fm_deviation(self, chan=1):
+        """Returns current FM deviation"""
+        return self.msg('SOURCE'+str(chan)+':FM:DEV?')
+    
+    # FSK commands
+    #####################
+    # FSK state commands
+    #####################
+    def set_fsk_state(self, enable=True, chan=1):
+        """Enables of disables frequency-shift keying modulation"""
+        return self.msg('SOURCE'+str(chan)+':FSK:STATE '+str("ON" if enable else "OFF"))
+    
+    def get_fsk_state(self, chan=1):
+        """Returns if frequency-shift keying modulation is enabled or not"""
+        return self.msg('SOURCE'+str(chan)+':FSK:STATE?')
+    
+    # FSK source commands
+    #####################
+    def set_fsk_source(self, src="INT", chan=1):
+        """Sets FSK source to INTernal or EXTernal"""
+        if src.upper() in ['INT','EXT']:
+            return self.msg('SOURCE'+str(chan)+':FSK:SOUR '+str(src))
+        else:
+            raise RangeException
+    
+    def get_fsk_state(self, chan=1):
+        """Returns current FSK source"""
+        return self.msg('SOURCE'+str(chan)+':FSK:SOUR?')
+    
+    # FSK frequency commands
+    #####################
+    def set_fsk_frequency(self, freq=100, chan=1):
+        """Sets FSK function frequenc. Can be number or MIN or MAX"""
+        return self.msg('SOURCE'+str(chan)+':FSK:FREQ '+str(freq))
+        
+    def get_fsk_frequency(self, chan=1):
+        """Returns current internal FSK function frequency"""
+        return self.msg('SOURCE'+str(chan)+':FSK:FREQ?')
+    
+    # FSK internal rate commands
+    #####################
+    def set_fsk_internal_rate(self, rate=100, chan=1):
+        """Sets FSK rate for internal sources. Can be number or MIN or MAX"""
+        return self.msg('SOURCE'+str(chan)+':FSK:INT:RATE '+str(rate))
+        
+    def get_fsk_internal_rate(self, chan=1):
+        """Returns current FM depth"""
+        return self.msg('SOURCE'+str(chan)+':FSK:INT:RATE?')
+    
+
     
 class AFG2005(AFGbase):
     def info(self):
