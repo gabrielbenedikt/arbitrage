@@ -1,0 +1,12 @@
+-AM commands
+-FM commands
+-FSK commands
+-frequency sweep commands
+-frequency counter commands
+-arbitrart waveform commands
+-save and recall commands
+
+-error code handling
+-device specific functions (differences: channels, frequency range, frequency counter, ...?)
+-return value checking
+-parameter bound checking
