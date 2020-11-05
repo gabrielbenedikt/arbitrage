@@ -114,7 +114,7 @@ class AFGbase():
     ###################
     def apply_func(self, func='SIN', freq=100, amp=0.1, off=0, chan=1):
         """Instructs device to output function 'func' at channel 'chan' with frequency 'freq', amplitude 'amp' and offset 'off'
-        'func' can be SIN, SQUare, RAMP, NOISE, USER
+        'func' can be SIN, SQUARE, RAMP, NOISE, USER
         'freq' in Hz
         'amp' in V
         'offs' in V"""
@@ -125,36 +125,161 @@ class AFGbase():
         'freq' in Hz
         'amp' in V
         'offs' in V"""
-        self.apply_func(chan=chan, func='SIN', freq=freq, amp=amp, off=off)
+        return self.apply_func(chan=chan, func='SIN', freq=freq, amp=amp, off=off)
     
     def apply_square(self,freq=100, amp=0.1, off=0, chan=1):
         """Instructs device to outut square function at channel 'chan' with frequency 'freq', amplitude 'amp' and offset 'off'
         'freq' in Hz
         'amp' in V
         'offs' in V"""
-        self.apply_func(chan=chan, func='SQUARE', freq=freq, amp=amp, off=off)
+        return self.apply_func(chan=chan, func='SQUARE', freq=freq, amp=amp, off=off)
         
     def apply_ramp(self,freq=100, amp=0.1, off=0, chan=1):
         """Instructs device to output ramp function at channel 'chan' with frequency 'freq', amplitude 'amp' and offset 'off'
         'freq' in Hz
         'amp' in V
         'offs' in V"""
-        self.apply_func(chan=chan, func='RAMP', freq=freq, amp=amp, off=off)
+        return self.apply_func(chan=chan, func='RAMP', freq=freq, amp=amp, off=off)
     
     def apply_noise(self,freq=100, amp=0.1, off=0, chan=1):
         """Instructs device to output noise at channel 'chan' with frequency 'freq', amplitude 'amp' and offset 'off'
         'freq' in Hz
         'amp' in V
         'offs' in V"""
-        self.apply_func(chan=chan, func='NOISE', freq=freq, amp=amp, off=off)
+        return self.apply_func(chan=chan, func='NOISE', freq=freq, amp=amp, off=off)
         
     def apply_user(self,freq=100, amp=0.1, off=0, chan=1):
         """Instructs device to output stored user function at channel 'chan' with frequency 'freq', amplitude 'amp' and offset 'off'
         'freq' in Hz
         'amp' in V
         'offs' in V"""
-        self.apply_func(chan=chan, func='USER', freq=freq, amp=amp, off=off)
-        
+        return self.apply_func(chan=chan, func='USER', freq=freq, amp=amp, off=off)
+    
+    def get_apply(self,chan=1):
+        """return current function settings"""
+        return self.msg('SOURCE'+str(chan)+'APPLY?')
+    
+    # Function commands
+    #####################
+    def set_func(self, func='SIN', chan=1):
+        """Instructs device to change output function of channen 'chan'
+        func can be SIN, SQUARE, RAMP, NOISE, USER"""
+        return self.msg('SOURCE'+str(chan)+':FUNC '+str(func))
+    
+    def get_func(self, chan=1):
+        """Returns currently set function"""
+        return self.msg('SOURCE'+str(chan)+':FUNC?')
+    
+    # Frequency commands
+    #####################
+    def set_freq(self, freq=100, chan=1):
+        """Instructs device to change output frequency of channel 'chan'
+        frequ can be a number or 'MIN' or 'MAX' """
+        return self.msg('SOURCE'+str(chan)+':FREQ '+str(freq))
+    
+    def get_freq(self, chan=1):
+        """Returns currently set frequency"""
+        return self.msg('SOURCE'+str(chan)+':FREQ?')
+    
+    # Amplitude commands
+    #####################
+    def set_amp(self, amp=0.1, chan=1):
+        """Instructs device to change output amplitude of channel 'chan'
+        amp can be a number or 'MIN' or 'MAX' """
+        return self.msg('SOURCE'+str(chan)+':AMPL '+str(amp))
+    
+    def get_amp(self, chan=1):
+        """Returns currently set amplitude"""
+        return self.msg('SOURCE'+str(chan)+':AMPL?')
+    
+    # DC Offset commands
+    #####################
+    def set_offset(self, offset=0, chan=1):
+        """Instructs device to change output dc offset of channel 'chan'
+        offset can be a number or 'MIN' or 'MAX' """
+        return self.msg('SOURCE'+str(chan)+':DCO '+str(offset))
+    
+    def get_offset(self, chan=1):
+        """Returns currently set dc offset"""
+        return self.msg('SOURCE'+str(chan)+':DCO?')
+    
+    # SQUARE Duty cycle commands
+    #####################
+    def set_square_dutycycle(self, duty=50, chan=1):
+        """Instructs device to change duty cycle of square function on channel 'chan'
+        duty can be a number (in percent) or 'MIN' or 'MAX' """
+        return self.msg('SOURCE'+str(chan)+':SQUARE:DCYCLE '+str(offset))
+    
+    def get_square_dutycycle(self, chan=1):
+        """Returns currently set square function duty cycle"""
+        return self.msg('SOURCE'+str(chan)+':SQUARE:DCYCLE?')
+    
+    # RAMP symmetry commands
+    #####################
+    def set_ramp_symmetry(self, sym=50, chan=1):
+        """Instructs device to change symmetry of ramp function on channel 'chan'
+        sym can be a number (in percent) or 'MIN' or 'MAX' """
+        return self.msg('SOURCE'+str(chan)+':RAMP:SYMM '+str(offset))
+    
+    def get_square_duty(self, chan=1):
+        """Returns currently set ramp symmetry"""
+        return self.msg('SOURCE'+str(chan)+':RAMP:SYMM?')
+    
+    # output commands
+    #####################
+    def set_output_enabled(self, enable=False):
+        """Turn on or off output"""
+        return self.msg('OUTP '+str("ON" if enable else "OFF"))
+    
+    def get_output_enabled(self):
+        """Returns if device output state"""
+        return self.msg('OUTP?')
+    
+    # output load commands
+    #####################
+    def set_output_load(self, load="DEF"):
+        """Set output load to 50ohm (DEF) or HighZ (INF)"""
+        if load.upper() in ["DEF","INF"]:
+            return self.msg('OUTP:LOAD '+str(load))
+        else:
+            raise RangeError
+    
+    def set_output_load_50ohm(self):
+        """Set output load to 50ohm"""
+        return self.set_output_load(load="DEF")
+    
+    def set_output_load_high(self):
+        """Set output load to HighZohm"""
+        return self.set_output_load(load="INF")
+    
+    def get_output_load(self):
+        """Returns if device output load state"""
+        return self.msg('OUTP:LOAD?')
+    
+    # volt units commands
+    #####################
+    def set_volt_units(self, unit="VPP", chan=1):
+        """Set voltage units to Vpp, Vrms of dBm"""
+        if unit.upper() in ["VPP","VRMS","DBM"]:
+            return self.msg('SOURCE'+str(chan)+':VOLT:UNIT '+str(unit))
+        else:
+            raise RangeError
+    
+    def set_volt_units_vpp(self, chan=1):
+        """Set voltage units to vpp"""
+        return self.set_output_volt_units(unit="VPP", chan=chan)
+    
+    def set_volt_units_vrms(self, chan=1):
+        """Set voltage units to vrms"""
+        return self.set_output_volt_units(unit="VRMS", chan=chan)
+    
+    def set_volt_units_dbm(self, chan=1):
+        """Set voltage units to vdbm"""
+        return self.set_output_volt_units(unit="DBM", chan=chan)
+    
+    def get_volt_units(self, chan=1):
+        """Returns current output voltage units of channel chan"""
+        return self.msg('SOURCE'+str(chan)+':VOLT:UNIT?')
     
     
     
