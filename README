@@ -1,0 +1,6 @@
+# Thorpezo
+the THORlabs PiEZO controller python library
+
+Python library for the Thorlabs open-loop piezo controllers MDT694B and MDT693B
+
+This library has only been tested with MDT694B
