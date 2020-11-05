@@ -1,6 +1,8 @@
-# Thorpezo
-the THORlabs PiEZO controller python library
+# ARBITRAGE
+the ARBITRAry function GEnerator python library
 
-Python library for the Thorlabs open-loop piezo controllers MDT694B and MDT693B
+A python library to control arbitrary function generators of the gwinstek afg-2000 anf afg-2100 series.
 
-This library has only been tested with MDT694B
+Only AFG-2105 was tested as this is the only device available.
+
+may be extendable to iso-tech afg-21000 devices. Feel free to check.
