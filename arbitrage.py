@@ -449,14 +449,6 @@ class AFGbase():
         """Returns current FM depth"""
         return self.msg('SOURCE'+str(chan)+':FSK:INT:RATE?')
     
-    
-    
-    
-    
-    
-    
-    
-    
     # Frequency sweep commands
     #####################
     # FS state commands
@@ -511,6 +503,49 @@ class AFGbase():
     def get_fs_source(self, chan=1):
         """Returns FS source"""
         return self.msg('SOURCE'+str(chan)+':SWE:SOUR?')
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    # Frequency counter commands
+    #####################
+    # FC gate commands
+    #####################
+    def set_fc_gate(self, gate=0.1):
+        """Sets frequency counter gate time"""
+        return self.msg('COUN:GAT '+str(gate))
+    
+    def get_fc_gate(self):
+        """Returns current frequency counter gate time"""
+        return self.msg('COUN:GAT?')
+    
+    # FC state commands
+    #####################
+    def set_fc_state(self, enable=True):
+        """Enables / disables frequency counter"""
+        return self.msg('COUN:STAT '+str("ON" if enable else "OFF"))
+    
+    def get_fc_state(self):
+        """Returns if frequency counter is enabled"""
+        return self.msg('COUN:STAT?')
+    
+    # FC counts commands
+    #####################
+    def get_fc_value(self):
+        """Returns counter frequency"""
+        return self.msg('COUN:VAL?')
+    
     
     
     
