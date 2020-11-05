@@ -504,20 +504,6 @@ class AFGbase():
         """Returns FS source"""
         return self.msg('SOURCE'+str(chan)+':SWE:SOUR?')
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
     # Frequency counter commands
     #####################
     # FC gate commands
@@ -546,22 +532,38 @@ class AFGbase():
         """Returns counter frequency"""
         return self.msg('COUN:VAL?')
     
+    # Save and recall commands
+    #####################
+    # save and recall commands
+    #####################
+    def save_state(self, reg=0):
+        """Saves current device state to register reg 0-9,
+        or saves arbitrary waveform to register reg 10-19"""
+        if reg in range(0,20):
+            return self.msg('*SAV '+str(reg))
+        else:
+            raise RangeException
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+    def recall_state(self, reg=0):
+        """Loads current device state from register reg 0-9,
+        or loads arbitrary waveform from register reg 10-19"""
+        if reg in range(0,20):
+            return self.msg('*RCL '+str(reg))
+        else:
+            raise RangeException
+        
+    # Arbitrary waveform commands
+    #####################
+    # AW data dac commands
+    #####################
+    def set_aw_dac(self, block="-511, -206, 0, 206, 511, 206, 0, -206"):
+        """Loads 'block' into memory
+        block can be:
+        -list of values, comma separated. E.g. "-511, -206, 0, 206, 511, 206, 0, -206"
+        -binary data: format #216 dat
+        where dat is 16 bit binary data"""
+        return self.msg('DATA:DAC VOLATILE, 0, '+str(block))
+        
 class AFG2005(AFGbase):
     def info(self):
         return("AFG2005")
