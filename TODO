@@ -1,5 +1,4 @@
 -error code handling
--device specific functions (differences: channels, frequency range, frequency counter, ...?)
 -return value checking
 -parameter bound checking
 -check arb functions

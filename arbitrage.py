@@ -59,6 +59,9 @@ class Arbitrage():
 
 class AFGbase():
     def __init__(self,dev):
+        self.frequencyrange=dict()
+        self.frequencyrange["Triangle"]=(0.1,1*10**6)
+        self.frequencyrange["Ramp"]=(0.1,1*10**6)
         self.opencon(dev)
         self.readresponse=True
         self.ser_read_thread=threading.Thread(target=self.ser_read_thread)
@@ -287,6 +290,47 @@ class AFGbase():
         """Returns current output voltage units of channel chan"""
         return self.msg('SOURCE'+str(chan)+':VOLT:UNIT?')
     
+    # Save and recall commands
+    #####################
+    # save and recall commands
+    #####################
+    def save_state(self, reg=0):
+        """Saves current device state to register reg 0-9,
+        or saves arbitrary waveform to register reg 10-19"""
+        if reg in range(0,20):
+            return self.msg('*SAV '+str(reg))
+        else:
+            raise RangeException
+    
+    def recall_state(self, reg=0):
+        """Loads current device state from register reg 0-9,
+        or loads arbitrary waveform from register reg 10-19"""
+        if reg in range(0,20):
+            return self.msg('*RCL '+str(reg))
+        else:
+            raise RangeException
+        
+    # Arbitrary waveform commands
+    #####################
+    # AW data dac commands
+    #####################
+    def set_aw_dac(self, block="-511, -206, 0, 206, 511, 206, 0, -206"):
+        """Loads 'block' into memory
+        block can be:
+        -list of values, comma separated. E.g. "-511, -206, 0, 206, 511, 206, 0, -206"
+        -binary data: format #216 dat
+        where dat is 16 bit binary data"""
+        return self.msg('DATA:DAC VOLATILE, 0, '+str(block))
+
+
+class AFG2000(AFGbase):
+    def info(self):
+        return("AFG20xx")
+
+class AFG2100(AFGbase):
+    def info(self):
+        return("AFG21xx")
+    
     # AM commands
     #####################
     # AM state commands
@@ -344,7 +388,6 @@ class AFGbase():
     def get_am_depth(self, chan=1):
         """Returns current AM depth"""
         return self.msg('SOURCE'+str(chan)+':AM:DEPT?')
-    
     
     # FM commands
     #####################
@@ -531,60 +574,58 @@ class AFGbase():
     def get_fc_value(self):
         """Returns counter frequency"""
         return self.msg('COUN:VAL?')
-    
-    # Save and recall commands
-    #####################
-    # save and recall commands
-    #####################
-    def save_state(self, reg=0):
-        """Saves current device state to register reg 0-9,
-        or saves arbitrary waveform to register reg 10-19"""
-        if reg in range(0,20):
-            return self.msg('*SAV '+str(reg))
-        else:
-            raise RangeException
-    
-    def recall_state(self, reg=0):
-        """Loads current device state from register reg 0-9,
-        or loads arbitrary waveform from register reg 10-19"""
-        if reg in range(0,20):
-            return self.msg('*RCL '+str(reg))
-        else:
-            raise RangeException
+
+class AFG2005(AFG2000):
+    def __init__(self,dev):
+        super().__init__(dev)
+        self.frequencyrange["Sine"]=(0.1,5*10**6)
+        self.frequencyrange["Square"]=(0.1,5*10**6)
         
-    # Arbitrary waveform commands
-    #####################
-    # AW data dac commands
-    #####################
-    def set_aw_dac(self, block="-511, -206, 0, 206, 511, 206, 0, -206"):
-        """Loads 'block' into memory
-        block can be:
-        -list of values, comma separated. E.g. "-511, -206, 0, 206, 511, 206, 0, -206"
-        -binary data: format #216 dat
-        where dat is 16 bit binary data"""
-        return self.msg('DATA:DAC VOLATILE, 0, '+str(block))
-        
-class AFG2005(AFGbase):
     def info(self):
         return("AFG2005")
 
-class AFG2105(AFGbase):
+class AFG2105(AFG2100):
+    def __init__(self,dev):
+        super().__init__(dev)
+        self.frequencyrange["Sine"]=(0.1,5*10**6)
+        self.frequencyrange["Square"]=(0.1,5*10**6)
+        
     def info(self):
         return("AFG2105")
 
-class AFG2012(AFGbase):
+class AFG2012(AFG2000):
+    def __init__(self,dev):
+        super().__init__(dev)
+        self.frequencyrange["Sine"]=(0.1,1*10**6)
+        self.frequencyrange["Square"]=(0.1,12*10**6)
+        
     def info(self):
         return("AFG2012")
 
-class AFG2112(AFGbase):
+class AFG2112(AFG2100):
+    def __init__(self,dev):
+        super().__init__(dev)
+        self.frequencyrange["Sine"]=(0.1,12*10**6)
+        self.frequencyrange["Square"]=(0.1,12*10**6)
+        
     def info(self):
         return("AFG2112")
 
-class AFG2025(AFGbase):
+class AFG2025(AFG2000):
+    def __init__(self,dev):
+        super().__init__(dev)
+        self.frequencyrange["Sine"]=(0.1,25*10**6)
+        self.frequencyrange["Square"]=(0.1,25*10**6)
+    
     def info(self):
         return("AFG2025")
 
-class AFG2125(AFGbase):
+class AFG2125(AFG2100):
+    def __init__(self,dev):
+        super().__init__(dev)
+        self.frequencyrange["Sine"]=(0.1,25*10**6)
+        self.frequencyrange["Square"]=(0.1,25*10**6)
+    
     def info(self):
         return("AFG2125")
 
