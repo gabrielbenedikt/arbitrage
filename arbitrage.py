@@ -449,7 +449,83 @@ class AFGbase():
         """Returns current FM depth"""
         return self.msg('SOURCE'+str(chan)+':FSK:INT:RATE?')
     
-
+    
+    
+    
+    
+    
+    
+    
+    
+    # Frequency sweep commands
+    #####################
+    # FS state commands
+    #####################
+    def set_fs_state(self, enable=True, chan=1):
+        """Enables of disables Frequency sweep"""
+        return self.msg('SOURCE'+str(chan)+':SWE:STATE '+str("ON" if enable else "OFF"))
+    
+    def get_fs_state(self, chan=1):
+        """Returns if Frequency sweep is enabled or not"""
+        return self.msg('SOURCE'+str(chan)+':SWE:STATE?')
+    
+    # FS start commands
+    #####################
+    def set_fs_start(self, freq=1, chan=1):
+        """Sets start frequency of FS. Can be number, 'MIN' or 'MAX'"""
+        return self.msg('SOURCE'+str(chan)+':FREQ:STAR '+str(freq))
+    
+    def get_fs_start(self, chan=1):
+        """Returns FS start frequency"""
+        return self.msg('SOURCE'+str(chan)+':FREQ:STAR?')
+    
+    # FS stop commands
+    #####################
+    def set_fs_stop(self, freq=1, chan=1):
+        """Sets stop frequency of FS. Can be number, 'MIN' or 'MAX'"""
+        return self.msg('SOURCE'+str(chan)+':FREQ:STOP '+str(freq))
+    
+    def get_fs_stop(self, chan=1):
+        """Returns FS stop frequency"""
+        return self.msg('SOURCE'+str(chan)+':FREQ:STOP?')
+    
+    # FS spacing commands
+    #####################
+    def set_fs_spacing(self, rate=1, chan=1):
+        """Sets FS sweep rate. Can be number (Hz), 'MIN' or 'MAX' """
+        return self.msg('SOURCE'+str(chan)+':SWE:RATE '+str(rate))
+    
+    def get_fs_spacing(self, chan=1):
+        """Returns FS sweep rate"""
+        return self.msg('SOURCE'+str(chan)+':SWE:RATE?')
+    
+    # FS source commands
+    #####################
+    def set_fs_source(self, src='IMM', chan=1):
+        """Sets FS source to 'IMMediate' or 'EXTernal'"""
+        if src.upper() in ['IMM','EXT']:
+            return self.msg('SOURCE'+str(chan)+':SWE:SOUR '+str(src))
+        else:
+            raise RangeException
+    
+    def get_fs_source(self, chan=1):
+        """Returns FS source"""
+        return self.msg('SOURCE'+str(chan)+':SWE:SOUR?')
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
 class AFG2005(AFGbase):
     def info(self):
