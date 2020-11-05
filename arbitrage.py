@@ -4,11 +4,11 @@ import serial
 import io
 import threading
 
-class RangeError:
+class RangeException(BaseException):
     """Parameter out of range"""
     pass
 
-class DeviceError:
+class DeviceException(BaseException):
     """Unsupported device"""
     pass
 
@@ -20,7 +20,7 @@ class Arbitrage():
         self.closecon()
         if "AFG-2005" in self.info:
             self.device=AFG2005(dev)
-        elif "AFG-2105" in self.info[0]:
+        elif "AFG-2105" in self.info:
             self.device=AFG2105(dev)
         elif "AFG-2012" in self.info:
             self.device=AFG2012(dev)
@@ -31,7 +31,7 @@ class Arbitrage():
         elif "AFG-2125" in self.info:
             self.device=AFG2125(dev)
         else:
-            raise DeviceError
+            raise DeviceException
             
     def opencon(self,dev):
         self.ser = serial.Serial(port=dev,
@@ -50,9 +50,12 @@ class Arbitrage():
         self.buf.write(msg+'\n')
         if self.readresponse:
             lines=self.buf.readlines()
-            return lines
+            if len(lines)>0:
+                return lines[0].strip()
+            else:
+                return lines
         else:
-            return ""
+            return ['']
 
 class AFGbase():
     def __init__(self,dev):
@@ -86,7 +89,10 @@ class AFGbase():
         self.buf.write(msg+'\n')
         if self.readresponse:
             lines=self.buf.readlines()
-            return lines
+            if len(lines)>0:
+                return lines[0].strip()
+            else:
+                return lines
         else:
             return ['']
 
@@ -157,7 +163,7 @@ class AFGbase():
     
     def get_apply(self,chan=1):
         """return current function settings"""
-        return self.msg('SOURCE'+str(chan)+'APPLY?')
+        return self.msg('SOURCE'+str(chan)+':APPLY?')
     
     # Function commands
     #####################
@@ -208,7 +214,7 @@ class AFGbase():
     def set_square_dutycycle(self, duty=50, chan=1):
         """Instructs device to change duty cycle of square function on channel 'chan'
         duty can be a number (in percent) or 'MIN' or 'MAX' """
-        return self.msg('SOURCE'+str(chan)+':SQUARE:DCYCLE '+str(offset))
+        return self.msg('SOURCE'+str(chan)+':SQUARE:DCYCLE '+str(duty))
     
     def get_square_dutycycle(self, chan=1):
         """Returns currently set square function duty cycle"""
@@ -219,9 +225,9 @@ class AFGbase():
     def set_ramp_symmetry(self, sym=50, chan=1):
         """Instructs device to change symmetry of ramp function on channel 'chan'
         sym can be a number (in percent) or 'MIN' or 'MAX' """
-        return self.msg('SOURCE'+str(chan)+':RAMP:SYMM '+str(offset))
+        return self.msg('SOURCE'+str(chan)+':RAMP:SYMM '+str(sym))
     
-    def get_square_duty(self, chan=1):
+    def get_ramp_symmetry(self, chan=1):
         """Returns currently set ramp symmetry"""
         return self.msg('SOURCE'+str(chan)+':RAMP:SYMM?')
     
@@ -242,7 +248,7 @@ class AFGbase():
         if load.upper() in ["DEF","INF"]:
             return self.msg('OUTP:LOAD '+str(load))
         else:
-            raise RangeError
+            raise RangeException
     
     def set_output_load_50ohm(self):
         """Set output load to 50ohm"""
@@ -263,23 +269,26 @@ class AFGbase():
         if unit.upper() in ["VPP","VRMS","DBM"]:
             return self.msg('SOURCE'+str(chan)+':VOLT:UNIT '+str(unit))
         else:
-            raise RangeError
+            raise RangeException
     
     def set_volt_units_vpp(self, chan=1):
         """Set voltage units to vpp"""
-        return self.set_output_volt_units(unit="VPP", chan=chan)
+        return self.set_volt_units(unit="VPP", chan=chan)
     
     def set_volt_units_vrms(self, chan=1):
         """Set voltage units to vrms"""
-        return self.set_output_volt_units(unit="VRMS", chan=chan)
+        return self.set_volt_units(unit="VRMS", chan=chan)
     
     def set_volt_units_dbm(self, chan=1):
         """Set voltage units to vdbm"""
-        return self.set_output_volt_units(unit="DBM", chan=chan)
+        return self.set_volt_units(unit="DBM", chan=chan)
     
     def get_volt_units(self, chan=1):
         """Returns current output voltage units of channel chan"""
         return self.msg('SOURCE'+str(chan)+':VOLT:UNIT?')
+    
+    # volt units commands
+    #####################
     
     
     
